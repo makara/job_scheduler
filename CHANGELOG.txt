@@ -1,6 +1,6 @@
 $Id$
 
-Job Scheduler 6.x 1.0 Beta 2, XXXX-XX-XX
+Job Scheduler 6.x 1.0 Beta 2, 2010-09-12
 ----------------------------------------
 
 - Replace FEEDS_REQUEST_TIME with JOB_SCHEDULER_REQUEST_TIME.
