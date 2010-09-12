@@ -3,9 +3,8 @@ $Id$
 Job Scheduler
 =============
 
-Job Scheduler is an API module that offers a scheduler for dispatching tasks
-in a timed matter once or periodically.
-
+Simple API for dispatching tasks once at a predetermined time or periodically at
+a fixed interval.
 
 Usage
 =====
@@ -21,10 +20,13 @@ Add a job.
   );
   job_scheduler()->set($job);
 
-Work off a job
+Execute a job on callback.
 
   function mymodule_unpublish_nodes($job) {
     // Do stuff.
+    // *Optionally* set new time.
+    $job['period'] = 86400;
+    job_scheduler()->set($job);
   }
 
 Remove a job.
