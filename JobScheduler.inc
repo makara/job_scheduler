@@ -90,7 +90,7 @@ class JobScheduler {
 
     // Query and dispatch scheduled jobs.
     $num = module_exists('drupal_queue') ? variable_get('job_schedule_queue_num', 200) : variable_get('job_schedule_num', 5);
-    $result = db_query_range("SELECT * FROM {job_schedule} WHERE scheduled = 0 AND (last + period) < %d ORDER BY next ASC", FEEDS_REQUEST_TIME, 0, $num);
+    $result = db_query_range("SELECT * FROM {job_schedule} WHERE scheduled = 0 AND next < %d ORDER BY next ASC", FEEDS_REQUEST_TIME, 0, $num);
     while ($job = db_fetch_array($result)) {
       // Flag periodic jobs as scheduled, remove one-off jobs.
       if ($job['periodic']) {

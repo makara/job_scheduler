@@ -75,8 +75,7 @@ function job_scheduler_schema() {
     'indexes' => array(
       'callback_type_id' => array('callback', 'type', 'id'),
       'callback_type' => array('callback', 'type'),
-      'last_period' => array('last', 'period'),
-      'periodic' => array('periodic'),
+      'next' => array('next'),
       'scheduled' => array('scheduled'),
     ),
   );
@@ -97,4 +96,15 @@ function job_scheduler_install() {
 function job_scheduler_uninstall() {
   // Remove tables.
   drupal_uninstall_schema('job_scheduler');
+}
+
+/**
+ * Fix indexes on next.
+ */
+function job_scheduler_update_6101() {
+  $ret = array();
+  db_drop_index($ret, 'job_schedule', 'last_period');
+  db_drop_index($ret, 'job_schedule', 'periodic');
+  db_add_index($ret, 'job_schedule', 'next', array('next'));
+  return $ret;
 }
