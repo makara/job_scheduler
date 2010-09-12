@@ -37,21 +37,23 @@ class JobScheduler {
    *   'callback' - The callback to evoke.
    *   'type'     - A string identifier of the type of job.
    *   'id'       - A numeric identifier of the job.
-   *   'period'   - The time when the task should be executed.
-   *   'periodic' - True if the task should be repeated periodically.
+   *   'interval' - Time span after which job is to be executed.
+   *   'periodic' - If TRUE job will be executed repeatedly at interval. If
+   *                FALSE, job will be executed once and then removed from
+   *                schedule.
    *
    * @code
    * function callback($job) {
    *   // Work off job.
    *   // Set next time to be called. If this portion of the code is not
    *   // reached for some reason, the scheduler will keep periodically invoking
-   *   // the callback() with the period value initially specified.
+   *   // the callback() with the interval value initially specified.
    *   $scheduler->set($job);
    * }
    */
   public function set($job) {
     $job['last'] = FEEDS_REQUEST_TIME;
-    $job['next'] = FEEDS_REQUEST_TIME + $job['period'];
+    $job['next'] = FEEDS_REQUEST_TIME + $job['interval'];
     $job['scheduled'] = 0;
     $this->remove($job);
     drupal_write_record('job_schedule', $job);
@@ -90,12 +92,12 @@ class JobScheduler {
 
     // Query and dispatch scheduled jobs.
     $num = module_exists('drupal_queue') ? variable_get('job_schedule_queue_num', 200) : variable_get('job_schedule_num', 5);
-    $result = db_query_range("SELECT * FROM {job_schedule} WHERE scheduled = 0 AND (last + period) < %d ORDER BY next ASC", FEEDS_REQUEST_TIME, 0, $num);
+    $result = db_query_range("SELECT * FROM {job_schedule} WHERE scheduled = 0 AND next < %d ORDER BY next ASC", FEEDS_REQUEST_TIME, 0, $num);
     while ($job = db_fetch_array($result)) {
       // Flag periodic jobs as scheduled, remove one-off jobs.
       if ($job['periodic']) {
         $job['scheduled'] = $job['last'] = FEEDS_REQUEST_TIME;
-        $job['next'] = $job['period'] + FEEDS_REQUEST_TIME;
+        $job['next'] = $job['interval'] + FEEDS_REQUEST_TIME;
         drupal_write_record('job_schedule', $job, array('callback', 'type', 'id'));
       }
       else {

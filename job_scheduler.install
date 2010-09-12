@@ -42,19 +42,19 @@ function job_scheduler_schema() {
         'not null' => TRUE,
         'description' => 'Timestamp when a job was last executed.',
       ),
-      'period' => array(
+      'interval' => array(
         'type' => 'int',
         'unsigned' => TRUE,
         'default' => 0,
         'not null' => TRUE,
-        'description' => 'Time period after which job is to be executed.',
+        'description' => 'Time span after which job is to be executed. If periodic this interval will be repeated.',
       ),
       'next' => array(
         'type' => 'int',
         'unsigned' => TRUE,
         'default' => 0,
         'not null' => TRUE,
-        'description' => 'Timestamp when a job is to be executed (next = last + period), used for fast ordering.',
+        'description' => 'Timestamp when a job is to be executed (next = last + interval), used for fast ordering.',
       ),
       'periodic' => array(
         'type' => 'int',
@@ -62,7 +62,7 @@ function job_scheduler_schema() {
         'unsigned' => TRUE,
         'default' => 0,
         'not null' => TRUE,
-        'description' => 'If true job will be automatically rescheduled with same period.',
+        'description' => 'If true job will be automatically rescheduled with same interval.',
       ),
       'scheduled' => array(
         'type' => 'int',
@@ -75,7 +75,7 @@ function job_scheduler_schema() {
     'indexes' => array(
       'callback_type_id' => array('callback', 'type', 'id'),
       'callback_type' => array('callback', 'type'),
-      'last_period' => array('last', 'period'),
+      'last_interval' => array('last', 'interval'),
       'periodic' => array('periodic'),
       'scheduled' => array('scheduled'),
     ),
