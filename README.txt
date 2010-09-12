@@ -3,8 +3,8 @@ $Id$
 Job Scheduler
 =============
 
-Job Scheduler is an API module that offers a scheduler for dispatching tasks
-in a timed matter once or periodically.
+Simple API for scheduling tasks once at a predetermined time or periodically at
+a fixed interval.
 
 
 Usage
