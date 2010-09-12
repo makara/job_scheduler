@@ -50,8 +50,8 @@ class JobScheduler {
    * }
    */
   public function set($job) {
-    $job['last'] = FEEDS_REQUEST_TIME;
-    $job['next'] = FEEDS_REQUEST_TIME + $job['period'];
+    $job['last'] = JOB_SCHEDULER_REQUEST_TIME;
+    $job['next'] = JOB_SCHEDULER_REQUEST_TIME + $job['period'];
     $job['scheduled'] = 0;
     $this->remove($job);
     drupal_write_record('job_schedule', $job);
@@ -86,16 +86,16 @@ class JobScheduler {
     $start = time();
 
     // Reschedule stuck periodic jobs after one hour.
-    db_query("UPDATE {job_schedule} SET scheduled = 0 WHERE scheduled < %d AND periodic = 1", FEEDS_REQUEST_TIME - 3600);
+    db_query("UPDATE {job_schedule} SET scheduled = 0 WHERE scheduled < %d AND periodic = 1", JOB_SCHEDULER_REQUEST_TIME - 3600);
 
     // Query and dispatch scheduled jobs.
     $num = module_exists('drupal_queue') ? variable_get('job_schedule_queue_num', 200) : variable_get('job_schedule_num', 5);
-    $result = db_query_range("SELECT * FROM {job_schedule} WHERE scheduled = 0 AND next < %d ORDER BY next ASC", FEEDS_REQUEST_TIME, 0, $num);
+    $result = db_query_range("SELECT * FROM {job_schedule} WHERE scheduled = 0 AND next < %d ORDER BY next ASC", JOB_SCHEDULER_REQUEST_TIME, 0, $num);
     while ($job = db_fetch_array($result)) {
       // Flag periodic jobs as scheduled, remove one-off jobs.
       if ($job['periodic']) {
-        $job['scheduled'] = $job['last'] = FEEDS_REQUEST_TIME;
-        $job['next'] = $job['period'] + FEEDS_REQUEST_TIME;
+        $job['scheduled'] = $job['last'] = JOB_SCHEDULER_REQUEST_TIME;
+        $job['next'] = $job['period'] + JOB_SCHEDULER_REQUEST_TIME;
         drupal_write_record('job_schedule', $job, array('callback', 'type', 'id'));
       }
       else {

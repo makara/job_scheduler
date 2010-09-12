@@ -3,6 +3,7 @@ $Id$
 Job Scheduler 6.x 1.0 Beta 2, XXXX-XX-XX
 ----------------------------------------
 
+- Replace FEEDS_REQUEST_TIME with JOB_SCHEDULER_REQUEST_TIME.
 - Fix indexes.
 
 Job Scheduler 6.x 1.0 Beta 1, 2010-09-11

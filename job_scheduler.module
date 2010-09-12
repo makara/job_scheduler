@@ -6,7 +6,7 @@
  * job scheduler module.
  */
 
-define('FEEDS_REQUEST_TIME', time());
+define('JOB_SCHEDULER_REQUEST_TIME', time());
 
 /**
  * Implementation of hook_cron().
