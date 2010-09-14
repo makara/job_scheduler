@@ -63,7 +63,7 @@ class JobScheduler {
    * A job is uniquely identified by $job = array(callbac, type, id).
    */
   public function remove($job) {
-    db_query("DELETE FROM {job_schedule} WHERE callback = '%s' AND type = '%s' AND id = %d", $job['callback'], $job['type'], $job['id']);
+    db_query("DELETE FROM {job_schedule} WHERE callback = '%s' AND type = '%s' AND id = %d", $job['callback'], $job['type'], isset($job['id']) ? $job['id'] : 0);
   }
 
   /**
