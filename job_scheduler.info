@@ -1,5 +1,7 @@
 ;$Id$
 name = Job Scheduler
 description = Scheduler API
-core = 6.x
+files[] = job_scheduler.module
+files[] = job_scheduler.install
+core = 7.x
 php = 5.2

@@ -12,7 +12,7 @@
 function job_scheduler_schema() {
   $schema = array();
   $schema['job_schedule'] = array(
-    'description' => t('Schedule of jobs to be executed.'),
+    'description' => 'Schedule of jobs to be executed.',
     'fields' => array(
       'callback' => array(
         'type' => 'varchar',
@@ -80,22 +80,6 @@ function job_scheduler_schema() {
     ),
   );
   return $schema;
-}
-
-/**
- * Implementation of hook_install().
- */
-function job_scheduler_install() {
-  // Create tables.
-  drupal_install_schema('job_scheduler');
-}
-
-/**
- * Implementation of hook_uninstall().
- */
-function job_scheduler_uninstall() {
-  // Remove tables.
-  drupal_uninstall_schema('job_scheduler');
 }
 
 /**
