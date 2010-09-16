@@ -17,10 +17,5 @@ function job_scheduler_cron() {
  * Return a JobScheduler object.
  */
 function job_scheduler() {
-  static $included;
-  if (!$included) {
-    require './'. drupal_get_path('module', 'job_scheduler') ."/JobScheduler.inc";
-    $included = TRUE;
-  }
   return JobScheduler::instance();
 }
