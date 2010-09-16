@@ -6,8 +6,6 @@
  * job scheduler module.
  */
 
-define('JOB_SCHEDULER_REQUEST_TIME', time());
-
 /**
  * Implementation of hook_cron().
  */

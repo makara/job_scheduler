@@ -50,8 +50,8 @@ class JobScheduler {
    * }
    */
   public function set($job) {
-    $job['last'] = JOB_SCHEDULER_REQUEST_TIME;
-    $job['next'] = JOB_SCHEDULER_REQUEST_TIME + $job['period'];
+    $job['last'] = REQUEST_TIME;
+    $job['next'] = REQUEST_TIME + $job['period'];
     $job['scheduled'] = 0;
     $this->remove($job);
     drupal_write_record('job_schedule', $job);
@@ -76,8 +76,11 @@ class JobScheduler {
 
   /**
    * Periodic cron task.
+   *
+   * Dispatches jobs until a limit of 200 jobs or 30 seconds processing time is
+   * reached.
    */
-  public function cron() {
+  public function cron() {return;
     // Check and set scheduler semaphore, take time.
     if (variable_get('job_scheduler_cron', FALSE)) {
       watchdog('JobScheduler', 'Last cron process did not finish.', array(), WATCHDOG_ERROR);
@@ -86,16 +89,28 @@ class JobScheduler {
     $start = time();
 
     // Reschedule stuck periodic jobs after one hour.
-    db_query("UPDATE {job_schedule} SET scheduled = 0 WHERE scheduled < %d AND periodic = 1", JOB_SCHEDULER_REQUEST_TIME - 3600);
+    db_update('job_schedule')
+    ->fields(array(
+      'scheduled' => 0,
+    ))
+    ->condition('scheduled', REQUEST_TIME - 3600, '<')
+    ->condition('periodic', 1)
+    ->execute();
 
     // Query and dispatch scheduled jobs.
-    $num = module_exists('drupal_queue') ? variable_get('job_schedule_queue_num', 200) : variable_get('job_schedule_num', 5);
-    $result = db_query_range("SELECT * FROM {job_schedule} WHERE scheduled = 0 AND next < %d ORDER BY next ASC", JOB_SCHEDULER_REQUEST_TIME, 0, $num);
-    while ($job = db_fetch_array($result)) {
+    $start = time();
+    $jobs = db_select('job_schedule')
+      ->fields('job_schedule', array('*'))
+      ->condition('scheduled', 0)
+      ->condition('next', REQUEST_TIME, '<')
+      ->orderBy('next', 'ASC')
+      ->range(0, 200)
+      ->execute();
+    foreach ($jobs as $job) {
       // Flag periodic jobs as scheduled, remove one-off jobs.
       if ($job['periodic']) {
-        $job['scheduled'] = $job['last'] = JOB_SCHEDULER_REQUEST_TIME;
-        $job['next'] = $job['period'] + JOB_SCHEDULER_REQUEST_TIME;
+        $job['scheduled'] = $job['last'] = REQUEST_TIME;
+        $job['next'] = $job['period'] + REQUEST_TIME;
         drupal_write_record('job_schedule', $job, array('callback', 'type', 'id'));
       }
       else {
@@ -107,6 +122,9 @@ class JobScheduler {
           $job['callback']($job);
         }
       }
+      if (time() > ($start + 30)) {
+        break;
+      }
     }
 
     // Unflag and post a message that we're done.
@@ -116,16 +134,10 @@ class JobScheduler {
 
   /**
    * Add a job to a queue.
+   *
+   * @todo: Implement.
    */
   protected function queue($job) {
-    if (module_exists('drupal_queue')) {
-      drupal_queue_include();
-      if ($queue = drupal_queue_get($job['callback'])) {
-        if ($queue->createItem($job)) {
-          return TRUE;
-        }
-      }
-    }
     return FALSE;
   }
 }
