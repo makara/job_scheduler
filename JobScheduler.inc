@@ -63,15 +63,21 @@ class JobScheduler {
    * A job is uniquely identified by $job = array(callbac, type, id).
    */
   public function remove($job) {
-    db_query("DELETE FROM {job_schedule} WHERE callback = '%s' AND type = '%s' AND id = %d", $job['callback'], $job['type'], isset($job['id']) ? $job['id'] : 0);
+    db_delete('job_schedule')
+      ->condition('callback', $job['callback'])
+      ->condition('type', $job['type'])
+      ->condition('id', isset($job['id']) ? $job['id'] : 0)
+      ->execute();
   }
 
   /**
    * Remove all jobs for a given callback and type.
    */
   public function removeAll($callback, $type) {
-    db_query("DELETE FROM {job_schedule} WHERE callback = '%s' AND type = '%s'", $callback, $type);
-    return db_affected_rows();
+    db_delete('job_schedule')
+      ->condition('callback', $callback)
+      ->condition('type', $type)
+      ->execute();
   }
 
   /**
