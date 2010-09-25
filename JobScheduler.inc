@@ -30,7 +30,7 @@ class JobScheduler {
   /**
    * Add a job to the schedule, replace any existing job.
    *
-   * A job is uniquely identified by $job = array(callbac, type, id).
+   * A job is uniquely identified by $job = array(callback, type, id).
    *
    * @param $job
    *   An array that must contain the following keys:
@@ -48,6 +48,7 @@ class JobScheduler {
    *   // the callback() with the period value initially specified.
    *   $scheduler->set($job);
    * }
+   * @endcode
    */
   public function set($job) {
     $job['last'] = REQUEST_TIME;
@@ -60,7 +61,7 @@ class JobScheduler {
   /**
    * Remove a job from the schedule, replace any existing job.
    *
-   * A job is uniquely identified by $job = array(callbac, type, id).
+   * A job is uniquely identified by $job = array(callback, type, id).
    */
   public function remove($job) {
     db_delete('job_schedule')
