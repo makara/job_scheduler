@@ -14,12 +14,12 @@ function job_scheduler_schema() {
   $schema['job_schedule'] = array(
     'description' => 'Schedule of jobs to be executed.',
     'fields' => array(
-      'callback' => array(
+      'name' => array(
         'type' => 'varchar',
         'length' => 128,
         'not null' => TRUE,
         'default' => '',
-        'description' => 'Callback to be invoked.',
+        'description' => 'Name of the schedule.',
       ),
       'type' => array(
         'type' => 'varchar',
@@ -73,8 +73,8 @@ function job_scheduler_schema() {
       ),
     ),
     'indexes' => array(
-      'callback_type_id' => array('callback', 'type', 'id'),
-      'callback_type' => array('callback', 'type'),
+      'name_type_id' => array('name', 'type', 'id'),
+      'name_type' => array('name', 'type'),
       'next' => array('next'),
       'scheduled' => array('scheduled'),
     ),
@@ -91,4 +91,22 @@ function job_scheduler_update_6101() {
   db_drop_index($ret, 'job_schedule', 'periodic');
   db_add_index($ret, 'job_schedule', 'next', array('next'));
   return $ret;
+}
+
+/**
+ * Rename 'callback' to 'name' field.
+ */
+function job_scheduler_update_7100() {
+  db_drop_index('job_schedule', 'callback_type_id');
+  db_drop_index('job_schedule', 'callback_type');
+  $spec = array(
+    'type' => 'varchar',
+    'length' => 128,
+    'not null' => TRUE,
+    'default' => '',
+    'description' => 'Name of the schedule.',
+  );
+  db_change_field('job_schedule', 'callback', 'name', $spec);
+  db_add_index('job_schedule', 'name_type_id', array('name', 'type', 'id'));
+  db_add_index('job_schedule', 'name_type', array('name', 'type'));
 }

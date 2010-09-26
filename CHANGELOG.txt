@@ -1,5 +1,11 @@
 $Id$
 
+Job Scheduler 7.x XXXXXXXXXXXXXXXXXXXXXX
+----------------------------------------
+
+- #922702: Fix Drupal Queue integration.
+- Upgrade to Drupal 7.
+
 Job Scheduler 6.x 1.0 Beta 3, 2010-09-14
 ----------------------------------------
 
