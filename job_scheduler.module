@@ -20,6 +20,7 @@ function job_scheduler_cron() {
     ->execute();
 
   // Query and dispatch scheduled jobs.
+  // Process a maximum of 200 jobs in a maximum of 30 seconds.
   $start = time();
   $total =
   $failed = 0;
