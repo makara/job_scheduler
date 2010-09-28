@@ -147,7 +147,7 @@ class JobScheduler {
         $this->reserve($job);
       }
     }
-    if (function_exists($info['worker callback'])) {
+    elseif (function_exists($info['worker callback'])) {
       $info['worker callback']($job);
     }
   }
