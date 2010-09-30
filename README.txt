@@ -54,7 +54,7 @@ be executed or when the job's expected execution time is very long.
 
 More information on Drupal Queue: http://api.drupal.org/api/group/queue/7
 
-Instead of declaring a worker callback, declare a queue.
+Instead of declaring a worker callback, declare a queue name.
 
   function example_cron_job_scheduler_info() {
     $schedulers = array();
