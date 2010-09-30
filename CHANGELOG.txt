@@ -1,7 +1,7 @@
 $Id$
 
-Job Scheduler 7.x XXXXXXXXXXXXXXXXXXXXXX
-----------------------------------------
+Job Scheduler 7.x 2.0 Alpha 1, 2010-09-29
+-----------------------------------------
 
 - #922702: Fix Drupal Queue integration.
   Note: JobScheduler API has changed significantly, API users must declare
