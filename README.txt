@@ -44,6 +44,35 @@ Remove a job.
   );
   JobScheduler::get('example_unpublish')->remove($job);
 
+Optionally jobs can declared together with a schedule in a hook_cron_job_scheduler_info().
+
+  function example_cron_job_scheduler_info() {
+    $schedulers = array();
+    $schedulers['example_unpublish'] = array(
+      'worker callback' => 'example_unpublish_nodes',
+      'jobs' => array(
+         array('type' => 'story', 'id' => 12, 'period' => 3600, 'periodic' => TRUE),
+      )
+    );
+    return $schedulers;
+  }
+
+Jobs can have a 'crontab' instead of a period. Crontab syntax are Unix-like formatted crontab lines.
+Example of job with crontab.
+
+  // This will create a job that will be triggered from monday to friday, from january to july, every two hours
+  function example_cron_job_scheduler_info() {
+    $schedulers = array();
+    $schedulers['example_unpublish'] = array(
+      'worker callback' => 'example_unpublish_nodes',
+      'jobs' => array(
+         array('type' => 'story', 'id' => 12, 'crontab' => '0 */2 * january-july mon-fri', 'periodic' => TRUE),
+      )
+    );
+    return $schedulers;
+  }
+
+Read more about crontab syntax, http://linux.die.net/man/5/crontab
 
 Drupal Queue integration
 ========================
