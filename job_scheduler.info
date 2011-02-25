@@ -1,4 +1,3 @@
-;$Id$
 name = Job Scheduler
 description = Scheduler API
 files[] = job_scheduler.module
