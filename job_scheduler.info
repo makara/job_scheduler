@@ -1,4 +1,3 @@
-;$Id$
 name = Job Scheduler
 description = Scheduler API
 core = 6.x
