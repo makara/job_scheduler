@@ -148,15 +148,21 @@ class JobSchedulerCronTab {
     $cron = $this->cron;
     while ($cron['hours']) {
       $hour = array_shift($cron['hours']);
-      if ($date['hours'] <= $hour) {
-        while ($cron['minutes']) {
-          $minute = array_shift($cron['minutes']);
+      // Current hour; next minute.
+      if ($date['hours'] == $hour) {
+        foreach ($cron['minutes'] as $minute) {
           if ($date['minutes'] < $minute) {
             $date['hours'] = $hour;
             $date['minutes'] = $minute;
             return $date;
           }
         }
+      }
+      // Next hour; first avaiable minute.
+      elseif ($date['hours'] < $hour) {
+        $date['hours'] = $hour;
+        $date['minutes'] = reset($cron['minutes']);
+        return $date;
       }
     }
     return FALSE;
